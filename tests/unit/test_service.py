@@ -3,13 +3,6 @@ from src.services.acme_service import AcmeService
 
 class FakeRepository:
 
-    def get_order(self, order_id: str):
-        return {
-            "order_id": order_id,
-            "customer_id": "C0111",
-            "status": "SHIPPED",
-        }
-
     def get_customer(self, customer_id: str):
         return {
             "customer_id": customer_id,
@@ -87,3 +80,12 @@ def test_get_order_context():
     assert result["invoice"]["order_id"] == "ORD02296"
 
     assert len(result["customer_history"]) == 2
+
+def test_get_order_context_order_not_found():
+
+    repository = FakeRepository()
+    service = AcmeService(repository)
+
+    result = service.get_order_context("ORD99999")
+
+    assert result is None
