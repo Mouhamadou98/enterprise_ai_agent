@@ -58,7 +58,7 @@ Current architecture:
                                   │
                                   ▼
                               CSV Data
-
+````
 
 The project uses an abstraction layer around LLM providers so that the agent is not directly coupled to Ollama.
 
@@ -89,7 +89,7 @@ def get_delivery(order_id: str) -> dict | None:
     """Retrieve delivery information for an order from the ACME Logistics ERP."""
     return service.get_delivery(order_id)
 
-
+```
 The LLM does not directly access the database.
 
 LLM
@@ -101,12 +101,13 @@ Tool Executor
 Business Service
  ↓
 Repository
+````
 
 This separation allows business operations to be controlled and validated independently from the LLM.
 
 🔎 RAG Pipeline
 The project implements a Retrieval-Augmented Generation pipeline for internal enterprise documentation.
-
+```
 Markdown Documents
         │
         ▼
@@ -133,6 +134,7 @@ Elasticsearch
                 │
                 ▼
               LLM
+```
 
 Documents
 The knowledge base contains synthetic enterprise documentation covering topics such as:
@@ -149,6 +151,7 @@ The knowledge base contains synthetic enterprise documentation covering topics s
 
 🧠 LLM + RAG
 The RAG pipeline can be combined with the LLM:
+```
 User Question
       │
       ▼
@@ -171,12 +174,14 @@ LLM
       │
       ▼
 Answer
+```
 
 The prompt instructs the model to use only the retrieved context and avoid fabricating information.
 
 🗄️ Enterprise Data
 The project uses a synthetic ACME Logistics dataset.
 It simulates:
+```
 CRM
  └── Customers
  └── Incidents
@@ -191,9 +196,11 @@ Support
 
 GED / Knowledge Base
  └── Internal Markdown documentation
+```
 
 🧪 Testing
 The project currently contains automated tests covering:
+```
 - Repository
 - Services
 - RAG loader
@@ -209,27 +216,34 @@ The project currently contains automated tests covering:
 - Business tools
 - Tool calling
 - Tool execution
+```
 
 Run the complete test suite:
+```
 uv run pytest
-
+```
 Current status:
+```
 34 passed
-
+```
 ⚙️ Installation
-Requirements
+Requirements:
+```
 Python 3.11+
 uv
 Docker
 Ollama
 Elasticsearch
+```
 
-Install dependencies
+Install dependencies:
+```
 uv pip install -r requirements.txt
+```
 
 Configure environment
-Create a .env file:
-
+Create a ```.env``` file:
+```
 LLM_PROVIDER=ollama
 
 OPENAI_API_KEY=
@@ -240,15 +254,17 @@ OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=llama3.2
 
 ELASTICSEARCH_URL=http://localhost:9200
-
+```
 🦙 Ollama
 Install and start Ollama.
 Pull the model:
+```
 ollama pull llama3.2
 ollama list
-
+```
 🔎 Elasticsearch
 Start Elasticsearch:
+```
 docker run -d \
   --name acme-elasticsearch \
   -p 9200:9200 \
@@ -257,28 +273,39 @@ docker run -d \
   -e "xpack.license.self_generated.type=trial" \
   -v acme-elasticsearch-data:/usr/share/elasticsearch/data \
   docker.elastic.co/elasticsearch/elasticsearch:9.5.4
+```
 
 Verify:
+```
 curl http://localhost:9200
+```
 
 📚 Index the Knowledge Base
 uv run python -m scripts.index_knowledge_base
 
 ▶️ Run the API
 Start FastAPI:
+```
 uv run uvicorn src.main:app --reload
+```
 
 API documentation:(swagger)
+```
 http://localhost:8000/docs
+```
 
 🤖 Test Tool Calling 
 Run:
+```
 uv run python -m scripts.test_tool_calling
+```
 This verifies that the LLM can identify and request a business tool.
 
 🔄 Test the Agent
 Run:
+```
 uv run python -m scripts.test_agent
+```
 
 This verifies the complete:  LLM → Tool → Tool Result → LLM  workflow.
 
@@ -287,8 +314,7 @@ This verifies the complete:  LLM → Tool → Tool Result → LLM  workflow.
 
 The project is being developed incrementally toward a production-oriented enterprise AI agent.
 Completed
-
-Completed
+```
 - [v] FastAPI foundation
 - [v] Repository / Service architecture
 - [v] Synthetic CRM / ERP dataset
@@ -323,3 +349,4 @@ In progress / Planned
 - [ ] End-to-end tests
 - [ ] Multi-provider production integrations
 - [ ] Production deployment architecture
+```
