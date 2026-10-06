@@ -1,11 +1,13 @@
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
+from src.config import settings  # adapte au vrai chemin de ton module Settings
+
 
 class ElasticsearchClient:
 
-    def __init__(self, url: str = "http://localhost:9200"):
-        self.client = Elasticsearch(url)
+    def __init__(self, url: str | None = None):
+        self.client = Elasticsearch(url or settings.elasticsearch_url)
 
     def is_available(self) -> bool:
         return self.client.ping()
@@ -50,7 +52,7 @@ class ElasticsearchClient:
             )
     
     def bulk_index_documents(self, index_name: str, documents: list[dict]) -> int:
-        
+
         actions = [
             {
                 "_index": index_name,
@@ -65,3 +67,46 @@ class ElasticsearchClient:
         )
 
         return success
+    
+    def knn_search(self, index_name: str, query_vector: list[float], k: int = 5, num_candidates: int = 20) -> list[dict]:
+        response = self.client.search(
+            index=index_name,
+            knn={
+                "field": "embedding",
+                "query_vector": query_vector,
+                "k": k,
+                "num_candidates": num_candidates,
+            },
+        )
+
+        return [
+            {
+                "content": hit["_source"]["content"],
+                "file_name": hit["_source"]["file_name"],
+                "source": hit["_source"]["source"],
+                "score": hit["_score"],
+            }
+            for hit in response["hits"]["hits"]
+        ]
+    
+    def keyword_search(self, index_name: str, query: str, k: int = 5) -> list[dict]:
+        
+        response = self.client.search(
+            index=index_name,
+            size=k,
+            query={
+                "match": {
+                    "content": query
+                }
+            },
+        )
+
+        return [
+            {
+                "content": hit["_source"]["content"],
+                "file_name": hit["_source"]["file_name"],
+                "source": hit["_source"]["source"],
+                "score": hit["_score"],
+            }
+            for hit in response["hits"]["hits"]
+        ]

@@ -1,6 +1,7 @@
 # Importations des modules nécessaires
 from pathlib import Path
 import json 
+from datetime import datetime
 
 import pandas as pd
 
@@ -90,3 +91,20 @@ class AcmeRepository:
         
         return results.iloc[0].to_dict()
 
+    def create_ticket(self, customer_id: str, order_id: str, incident_id: str, subject: str, priority: str = "MEDIUM") -> dict:
+        
+        ticket = {
+        "ticket_id": f"TKT{len(self.tickets) + 1:05d}",
+        "customer_id": customer_id,
+        "order_id": order_id,
+        "incident_id": incident_id,
+        "subject": subject,
+        "priority": priority,
+        "status": "OPEN",
+        "created_at": datetime.now().strftime("%Y-%m-%d"),
+        }
+
+
+        self.tickets = self.tickets._append(ticket, ignore_index=True)
+
+        return ticket

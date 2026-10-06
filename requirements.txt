@@ -7,3 +7,5 @@ langchain==1.4.2
 # langchain-community==0.4.2(deprecated)
 sentence-transformers==6.1.0
 elasticsearch==9.5.1
+pydantic-settings
+ollama

@@ -104,3 +104,53 @@ def test_bulk_index_documents():
     assert result["count"] == 2
 
     client.client.indices.delete(index=index_name)
+
+def test_knn_search():
+    client = ElasticsearchClient()
+
+    index_name = "test_acme_knowledge"
+
+    client.create_index(
+        index_name=index_name,
+        dimensions=3,
+    )
+
+    documents = [
+        {
+            "content": "Politique de livraison",
+            "embedding": [1.0, 0.0, 0.0],
+            "file_name": "delivery.md",
+            "source": "delivery.md",
+        },
+        {
+            "content": "Politique de facturation",
+            "embedding": [0.0, 1.0, 0.0],
+            "file_name": "billing.md",
+            "source": "billing.md",
+        },
+        {
+            "content": "Politique de retour",
+            "embedding": [0.0, 0.0, 1.0],
+            "file_name": "return.md",
+            "source": "return.md",
+        },
+    ]
+
+    client.bulk_index_documents(
+        index_name=index_name,
+        documents=documents,
+    )
+
+    client.client.indices.refresh(index=index_name)
+
+    results = client.knn_search(
+        index_name=index_name,
+        query_vector=[1.0, 0.0, 0.0],
+        k=1,
+        num_candidates=3,
+    )
+
+    assert len(results) == 1
+    assert results[0]["file_name"] == "delivery.md"
+
+    client.client.indices.delete(index=index_name)

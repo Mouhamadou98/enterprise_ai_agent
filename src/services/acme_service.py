@@ -74,3 +74,18 @@ class AcmeService:
         }
 
         return context
+    
+    def create_ticket(self, customer_id: str, order_id: str, incident_id: str, subject: str, priority: str = "MEDIUM") -> dict:
+        
+        """
+        Crée un ticket d'incident pour un client.
+        
+        """
+
+        return self.repository.create_ticket(
+            customer_id=customer_id,
+            order_id=order_id,
+            incident_id=incident_id,
+            subject=subject,
+            priority=priority,
+        )
