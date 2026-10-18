@@ -6,7 +6,7 @@ class RAGService:
     def __init__(self, retriever: KnowledgeRetriever):
         self.retriever = retriever
     
-    def retrieve_context(self, query: str, k: int = 5) -> list[dict]:
+    def retrieve_context(self, query: str, k: int = 5) -> str:
         """
         Retrieve relevant content from the knowledge base based on the query.
 

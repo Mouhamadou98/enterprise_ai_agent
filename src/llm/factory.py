@@ -21,7 +21,7 @@ class LLMFactory:
 
         if provider == "ollama":
             return OllamaLLM()
-
+        
         raise ValueError(
             f"LLM provider inconnu : {settings.llm_provider}"
         )

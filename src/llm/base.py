@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from src.llm.schemas import LLMResponse
 
 class LLMService(ABC):
     
@@ -11,7 +12,7 @@ class LLMService(ABC):
         raise NotImplementedError("Subclasses must implement this method.")
     
     @abstractmethod
-    def generate_with_tools(self, messages: list[dict], tools: list) -> object:
+    def generate_with_tools(self, messages: list[dict], tools: list) -> LLMResponse:
         """
         Génère une réponse en permettant au LLM d'utiliser des tools.
         """
